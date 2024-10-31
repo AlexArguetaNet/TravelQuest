@@ -1,4 +1,7 @@
 import TravelStory from "../models/travelStory.model.js";
+import fs from "fs";
+import path from "path";
+
 
 export const addTravelStory = async (req, res) => {
 
@@ -41,6 +44,23 @@ export const getAllTravelStories = async (req, res) => {
     try {
         const travelStories = await TravelStory.find({ userId: userId }).sort({ isFavorite: - 1});
         res.status(200).json({ stories: travelStories });
+    } catch (err) {
+        res.status(500).json({ err: true, msg: err.message });
+    }
+
+}
+
+export const uploadImage = async (req, res) => {
+
+    try {
+
+        if (!req.file) {
+            return res.status(400).json({ err: true, msg: "No image uploaded" });
+        }
+
+        const imageUrl = `http://localhost:4001/uploads/${req.file.filename}`;
+        res.status(201).json({ imageUrl });
+
     } catch (err) {
         res.status(500).json({ err: true, msg: err.message });
     }
